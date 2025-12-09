@@ -10,12 +10,9 @@ const api = axios.create({
 })
 
 const getToken = () => localStorage.getItem("token");
-
 const setToken = (token) => localStorage.setItem("token", token);
-
 const removeToken = () => localStorage.removeItem("token");
 
-// Request interceptor for api calls => security guard that checks each API request and adds something if needed.
 api.interceptors.request.use(
     (config) => {
         const token = getToken();
@@ -24,18 +21,13 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 )
-// Response interceptor for API calls =>  checker that looks at the server’s reply before your code receives it.
+
 api.interceptors.response.use(
-    (response) => {
-        return response.data;
-    },
+    (response) => response.data,
     async (error) => {
         if(error.response && error.response.status === 401) {
-            // Handle unauthorized access - e.g., logout user, redirect to login page, etc.
             removeToken();
             window.location.href = '/login';
         }
@@ -43,7 +35,6 @@ api.interceptors.response.use(
     }
 )
 
-// auth api
 export const authAPI = {
     register: async (email, password, name) => {
         const data = await api.post("/auth/register", (email, password, name));
@@ -67,7 +58,81 @@ export const authAPI = {
 
     getMe: async () => {
         return api.get("/auth/me");
-    }, 
+    },
+
+    getGoogleAuthUrl: async () => {
+        const data = await api.get("/auth/google/auth-url");
+        return data.authUrl;
+    },
+
+    connectGoogle: async (code) => {
+        return api.post("/auth/google/connect", { code });
+    },
+
+    disconnectPlatform: async (platform) => {
+        return api.post(`/auth/disconnect/${platform}`);
+    },
 }
+
+// Emails
+export const emailAPI = {
+    getAll: async (page = 1, limit = 20) => {
+        return api.get(`/emails?page=${page}&limit=${limit}`);
+    },
+
+    getById: async (id) => {
+        return api.get(`/emails/${id}`);
+    },
+
+    search: async (query) => {
+        return api.get(`/emails/search/${query}`);
+    },
+
+    getUnread: async () => {
+        return api.get(`/emails/filter/unread`);
+    },
+
+    send: async (emailData) => {
+        return api.post(`/emails/send`, emailData);
+    },
+
+    markRead: async (id, isRead) => {
+        return api.put(`/emails/${id}/read`, { isRead });
+    },
+
+    toggleStar: async (id, isStarred) => {
+        return api.put(`/emails/${id}/star`, { isStarred });
+    },
+
+    delete: async (id) => {
+        return api.delete(`/emails/${id}`);
+    },
+
+    deleteAll: async () => {
+        return api.delete(`/emails/all/reset`);
+    }
+};
+
+// Sync
+export const syncAPI = {
+    syncAll: async () => {
+        return api.post(`/sync/all`);
+    },
+
+    syncGmail: async () => {
+        return api.post(`/sync/gmail`);
+    },
+
+    getStatus: async () => {
+        return api.get(`/sync/status`);
+    }
+};
+
+// AI Chat
+export const chatAPI = {
+    query: async (message) => {
+        return api.post(`/chat/query`, { message });
+    },
+};
 
 export { getToken, setToken, removeToken };

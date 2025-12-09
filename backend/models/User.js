@@ -18,6 +18,29 @@ const UserSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
+        
+        // OAuth tokens for connected platforms (Gmail, etc.)
+        // These are encrypted tokens that let us access user's Gmail on their behalf
+        tokens: {
+            google: {
+                accessToken: String,    
+                refreshToken: String,    
+                expiresAt: Date,         
+                scope: [String]           // permissions we have (read emails, send emails, etc.)
+            }
+        },
+        
+        connectedPlatforms: {
+            gmail: {
+                type: Boolean,
+                default: false
+            }
+        },
+        
+        lastSync: {
+            gmail: Date
+        },
+        
         createdAt: {
             type: Date,
             default: Date.now,
@@ -28,7 +51,7 @@ const UserSchema = new mongoose.Schema(
         }
     },
     {
-        timestamps: true,
+        timestamps: true,  // Automatically add updatedAt field
     }
 );
 

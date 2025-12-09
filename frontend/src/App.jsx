@@ -12,13 +12,20 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-primary/10">
-            <span className="text-2xl font-bold text-primary">IQ</span>
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4">
+        <div className="w-full max-w-md text-center space-y-6">
+          <div className="flex flex-col items-center gap-3">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-zinc-900 text-zinc-50 text-sm font-semibold">
+              IQ
+            </div>
+            <div>
+              <p className="text-base font-semibold text-zinc-900">Loading InboxIQ</p>
+              <p className="text-sm text-zinc-500">
+                Please wait a moment while we get things ready.
+              </p>
+            </div>
           </div>
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
-          <p className="text-muted-foreground">Loading...</p>
+          <Loader2 className="h-6 w-6 animate-spin mx-auto text-zinc-400" />
         </div>
       </div>
     );
@@ -26,27 +33,27 @@ function AppContent() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        <div className="w-full max-w-md space-y-4">
-          {showRegister ? (
-            <Register
-              onToggle={() => setShowRegister(false)}
-            />
-          ) : (
-            <Login
-              onToggle={() => setShowRegister(true)}
-            />
-          )}
-          <div className="text-center">
-            <button
-              onClick={() => setShowRegister(!showRegister)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showRegister
-                ? 'Already have an account? Sign in'
-                : "Don't have an account? Sign up"}
-            </button>
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4">
+        <div className="w-full max-w-md space-y-6">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-zinc-900 text-zinc-50 text-xs font-semibold">
+              IQ
+            </div>
+            <div>
+              <p className="text-xl font-semibold tracking-tight text-zinc-900">
+                {showRegister ? 'Create your InboxIQ account' : 'Welcome back to InboxIQ'}
+              </p>
+              <p className="mt-1 text-sm text-zinc-500">
+                A clean, focused workspace for your email and AI assistant.
+              </p>
+            </div>
           </div>
+
+          {showRegister ? (
+            <Register onToggle={() => setShowRegister(false)} />
+          ) : (
+            <Login onToggle={() => setShowRegister(true)} />
+          )}
         </div>
       </div>
     );
